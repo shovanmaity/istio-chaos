@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: boutique-frontend
+  namespace: boutique
+spec:
+  gateways:
+  - boutique-gateway
+  hosts:
+  - '*'
+  http:
+  - fault:
+      delay:
+        fixedDelay: 7s
+        percentage:
+          value: 100
+    match:
+    - uri:
+        prefix: /
+    name: frontend-external
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: frontend-external.boutique.svc.cluster.local
+        port:
+          number: 80
